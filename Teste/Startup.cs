@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Teste.Models;
 using Teste.Data;
+using Teste.Services;
 
 namespace Teste
 {
@@ -42,6 +43,7 @@ namespace Teste
             builder.MigrationsAssembly("Teste")));
 
             services.AddScoped<SeedingService>();
+            services.AddScoped<SellerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Teste.Models;
+
+namespace Teste.Services
+{
+    public class SellerService
+    {
+        private readonly TesteContext _testeContext;
+
+        public SellerService(TesteContext testeContext)
+        {
+            _testeContext = testeContext;
+        }
+
+        public List<Seller> FindAll()
+        {
+            return _testeContext.Seller.ToList(); 
+        }
+
+
+
+    }
+}
