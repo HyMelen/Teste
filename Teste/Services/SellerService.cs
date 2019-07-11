@@ -20,6 +20,11 @@ namespace Teste.Services
             return _testeContext.Seller.ToList(); 
         }
 
+        public void Insert(Seller obj)
+        {
+            _testeContext.Add(obj);
+            _testeContext.SaveChanges();
+        }
 
 
     }
