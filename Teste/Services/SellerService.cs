@@ -22,6 +22,7 @@ namespace Teste.Services
 
         public void Insert(Seller obj)
         {
+            obj.Department = _testeContext.Department.First();
             _testeContext.Add(obj);
             _testeContext.SaveChanges();
         }
