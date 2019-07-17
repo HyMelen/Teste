@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Teste.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Teste.Services
 {
@@ -28,7 +29,7 @@ namespace Teste.Services
 
         public Seller FindById(int id )
         {
-            return _testeContext.Seller.FirstOrDefault(x => x.Id == id);
+            return _testeContext.Seller.Include(obj => obj.Department).FirstOrDefault(x => x.Id == id);
         }
 
         public void Remove(int id)
