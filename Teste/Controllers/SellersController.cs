@@ -39,5 +39,31 @@ namespace Teste.Controllers
             _sellerService.Insert(seller);
             return RedirectToAction(nameof(Index));
         }
+
+        public IActionResult Delete(int? id) // Coloca interrogação para indicar que é opcional
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var obj = _sellerService.FindById(id.Value);       // Utiliza o value pq ele é um nullable, um valor opcional,
+            if (obj == null)                                   //  pra pegar o valor dele, caso exista, tem que urilizqar o value
+            {
+                return NotFound();
+            }
+
+            return View(obj);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            _sellerService.Remove(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+
     }
+     
 }

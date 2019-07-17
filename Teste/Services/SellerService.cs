@@ -26,6 +26,19 @@ namespace Teste.Services
             _testeContext.SaveChanges();
         }
 
+        public Seller FindById(int id )
+        {
+            return _testeContext.Seller.FirstOrDefault(x => x.Id == id);
+        }
+
+        public void Remove(int id)
+        {
+            var obj = _testeContext.Seller.Find(id);
+            _testeContext.Remove(obj);
+            _testeContext.SaveChanges();
+        }
+
+
 
     }
 }
