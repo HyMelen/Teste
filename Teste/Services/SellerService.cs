@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Teste.Models;
 using Microsoft.EntityFrameworkCore;
+using Teste.Services.Exceptions;
 
 namespace Teste.Services
 {
@@ -39,7 +40,22 @@ namespace Teste.Services
             _testeContext.SaveChanges();
         }
 
-
-
+        public void update(Seller obj)
+        {
+            if (!_testeContext.Seller.Any(x => x.Id == obj.Id))
+            {
+                throw new NotFoundException("Id not found");
+            }
+            try
+            {
+                _testeContext.Seller.Update(obj);
+                _testeContext.SaveChanges();
+            }
+            catch(DbUpdateConcurrencyException e)
+            {
+                throw new DbConcurrencyException(e.Message);
+            }
+            
+        }
     }
 }
