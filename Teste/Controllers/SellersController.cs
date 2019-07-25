@@ -97,7 +97,7 @@ namespace Teste.Controllers
             return View(viewModel);
         }
 
-        [HttpPost]
+        [HttpPost]                                       ///executa
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Seller seller) 
         {
