@@ -11,6 +11,8 @@ using System.Diagnostics;
 
 namespace Teste.Controllers
 {
+    // Inserindo paralelismo com Task, async e await... 
+    // Em todas as operações que acessam  bancos de dados.
     public class SellersController : Controller
     {
         private readonly SellerService _sellerService;
@@ -22,39 +24,39 @@ namespace Teste.Controllers
             _departmentService = departmentService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<Seller> list = _sellerService.FindAll();
+            var list = await _sellerService.FindAllAsync();
             return View(list);
         }
-
-        public IActionResult Create()
+            
+        public async Task<IActionResult> Create()
         {
-            var departments = _departmentService.FindAll();
+            var departments = await _departmentService.FindAllAsync();
             var viewModel = new SellerFormViewModel { Departments = departments };
             return View(viewModel);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Seller seller)
+        public async Task<IActionResult> Create(Seller seller)
         {
             if (!ModelState.IsValid)
             {
-                var departments = _departmentService.FindAll();
+                var departments = await _departmentService.FindAllAsync();
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
                 return View(viewModel);
             }
-            _sellerService.Insert(seller);
+            await _sellerService.InsertAsync(seller);
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Delete(int? id) // Coloca interrogação para indicar que é opcional
+        public async Task<IActionResult> Delete(int? id) // Coloca interrogação para indicar que é opcional
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
-                var obj = _sellerService.FindById(id.Value);       // Utiliza o value pq ele é um nullable, um valor opcional,
+                var obj = await _sellerService.FindByIdAsync(id.Value);       // Utiliza o value pq ele é um nullable, um valor opcional,
 
             if (obj == null)                                   //  pra pegar o valor dele, caso exista, tem que urilizqar o value
             {
@@ -66,19 +68,19 @@ namespace Teste.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)                    //executa
+        public async Task<IActionResult> Delete(int id)                    //executa
         {
-            _sellerService.Remove(id);
+           await _sellerService.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Details(int? id)                   //retorna a view
+        public async Task<IActionResult> Details(int? id)                   //retorna a view
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
-            var obj = _sellerService.FindById(id.Value);       // Ele pega o departamento tambem  por causa do 
+            var obj = await _sellerService.FindByIdAsync(id.Value);       // Ele pega o departamento tambem  por causa do 
             if (obj == null)                                   //Include(obj => obj.Department)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not Found" });
@@ -87,29 +89,29 @@ namespace Teste.Controllers
             return View(obj);
         }
 
-        public IActionResult Edit(int? id)                     //retorna a view
+        public async Task<IActionResult> Edit(int? id)                     //retorna a view
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
-            var obj = _sellerService.FindById(id.Value);       // Ele pega o departamento tambem  por causa do 
+            var obj = await _sellerService.FindByIdAsync(id.Value);       // Ele pega o departamento tambem  por causa do 
             if (obj == null)                                   //Include(obj => obj.Department)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
-            List<Department> departments = _departmentService.FindAll();
+            List<Department> departments = await _departmentService.FindAllAsync();
             SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
             return View(viewModel);
         }
 
         [HttpPost]                                       ///executa
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Seller seller) 
+        public async Task<IActionResult> Edit(int id, Seller seller) 
         {
             if (!ModelState.IsValid)  // Valida os campos de seller, se o javascript não estiver funcionando 
             {
-                var departments = _departmentService.FindAll();
+                var departments = await _departmentService.FindAllAsync();
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
                 return View(viewModel);
             }
@@ -120,7 +122,7 @@ namespace Teste.Controllers
             }
             try
             {
-                _sellerService.update(seller);
+                await _sellerService.updateAsync(seller);
                 return RedirectToAction(nameof(Index));
             }
             catch (ApplicationException e)

@@ -8,6 +8,8 @@ using Teste.Services.Exceptions;
 
 namespace Teste.Services
 {
+    // Inserindo paralelismo com Task, async e await... 
+    // Em todas as operações que acessam  bancos de dados.
     public class SellerService
     {
         private readonly TesteContext _testeContext;
@@ -17,39 +19,41 @@ namespace Teste.Services
             _testeContext = testeContext;
         }
 
-        public List<Seller> FindAll()
+        public async Task<List<Seller>> FindAllAsync()
         {
-            return _testeContext.Seller.ToList(); 
+            return await _testeContext.Seller.ToListAsync(); 
         }
 
-        public void Insert(Seller obj)
+        public async Task InsertAsync(Seller obj)
         {
             _testeContext.Add(obj);
-            _testeContext.SaveChanges();
+            await _testeContext.SaveChangesAsync();
         }
 
-        public Seller FindById(int id )
+        public async Task<Seller> FindByIdAsync(int id )
         {
-            return _testeContext.Seller.Include(obj => obj.Department).FirstOrDefault(x => x.Id == id);
+            return await _testeContext.Seller.Include(obj => obj.Department).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public void Remove(int id)
+        public async Task RemoveAsync(int id)
         {
             var obj = _testeContext.Seller.Find(id);
             _testeContext.Remove(obj);
-            _testeContext.SaveChanges();
+            await _testeContext.SaveChangesAsync();
         }
 
-        public void update(Seller obj)
+        public async Task updateAsync(Seller obj)
         {
-            if (!_testeContext.Seller.Any(x => x.Id == obj.Id))
+
+            bool hasAny = await _testeContext.Seller.AnyAsync(x => x.Id == obj.Id);
+            if (!hasAny)
             {
                 throw new NotFoundException("Id not found");
             }
             try
             {
                 _testeContext.Seller.Update(obj);
-                _testeContext.SaveChanges();
+                await _testeContext.SaveChangesAsync();
             }
             catch(DbUpdateConcurrencyException e)
             {

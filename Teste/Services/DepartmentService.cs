@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Teste.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Teste.Services
 {
@@ -14,9 +16,14 @@ namespace Teste.Services
             _testeContext = testeContext;
         }
 
-        public List<Department> FindAll()
+
+        // Inserindo paralelismo com Task, async e await... 
+        // Em todas as operações que acessam  bancos de dados.
+
+
+        public async Task<List<Department>> FindAllAsync()
         {
-            return _testeContext.Department.OrderBy(x => x.Name).ToList();
+            return await _testeContext.Department.OrderBy(x => x.Name).ToListAsync();
         }
     }
 }
