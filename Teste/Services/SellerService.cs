@@ -21,7 +21,7 @@ namespace Teste.Services
 
         public async Task<List<Seller>> FindAllAsync()
         {
-            return await _testeContext.Seller.ToListAsync(); 
+            return await _testeContext.Seller.ToListAsync();
         }
 
         public async Task InsertAsync(Seller obj)
@@ -30,17 +30,27 @@ namespace Teste.Services
             await _testeContext.SaveChangesAsync();
         }
 
-        public async Task<Seller> FindByIdAsync(int id )
+        public async Task<Seller> FindByIdAsync(int id)
         {
             return await _testeContext.Seller.Include(obj => obj.Department).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task RemoveAsync(int id)
         {
-            var obj = _testeContext.Seller.Find(id);
-            _testeContext.Remove(obj);
-            await _testeContext.SaveChangesAsync();
+            try
+            {
+                var obj = _testeContext.Seller.Find(id);
+                _testeContext.Remove(obj);
+                await _testeContext.SaveChangesAsync();
+            }
+            catch
+            {
+
+                throw new IntegrityException("Can't delete seller because he/she has sales");
+
+            }
         }
+
 
         public async Task updateAsync(Seller obj)
         {
@@ -55,11 +65,11 @@ namespace Teste.Services
                 _testeContext.Seller.Update(obj);
                 await _testeContext.SaveChangesAsync();
             }
-            catch(DbUpdateConcurrencyException e)
+            catch (DbUpdateConcurrencyException e)
             {
                 throw new DbConcurrencyException(e.Message);
             }
-            
+
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Teste.Controllers
             var list = await _sellerService.FindAllAsync();
             return View(list);
         }
-            
+
         public async Task<IActionResult> Create()
         {
             var departments = await _departmentService.FindAllAsync();
@@ -56,7 +56,7 @@ namespace Teste.Controllers
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
-                var obj = await _sellerService.FindByIdAsync(id.Value);       // Utiliza o value pq ele é um nullable, um valor opcional,
+            var obj = await _sellerService.FindByIdAsync(id.Value);       // Utiliza o value pq ele é um nullable, um valor opcional,
 
             if (obj == null)                                   //  pra pegar o valor dele, caso exista, tem que urilizqar o value
             {
@@ -70,8 +70,16 @@ namespace Teste.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)                    //executa
         {
-           await _sellerService.RemoveAsync(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _sellerService.RemoveAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch(IntegrityException e)
+            {
+                return RedirectToAction(nameof(Error), new { message = e.Message });
+            }
+
         }
 
         public async Task<IActionResult> Details(int? id)                   //retorna a view
@@ -107,7 +115,7 @@ namespace Teste.Controllers
 
         [HttpPost]                                       ///executa
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Seller seller) 
+        public async Task<IActionResult> Edit(int id, Seller seller)
         {
             if (!ModelState.IsValid)  // Valida os campos de seller, se o javascript não estiver funcionando 
             {
@@ -142,9 +150,9 @@ namespace Teste.Controllers
             return View(errorViewModel);
 
         }
-            
+
     }
 
 
 }
-     
+
